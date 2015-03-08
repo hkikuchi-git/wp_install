@@ -3,9 +3,32 @@
 # reference
 #  https://gist.github.com/bgallagh3r/2853221
 
+#
+_WP_SITE=https://ja.wordpress.org/
+_WP_FILE=latest-ja.tar.gz
+_WP_DL=${_WP_SITE}${_WP_FILE}
+
+#
+_LEN=32
+
+#
+if [ $# -eq 0 ]; then
+  echo "$0 [install-directory]"
+  exit 1
+fi
+
+_DIR=$1
+
+if [ ! -d ${_DIR} ]; then
+  mkdir -p ${_DIR}
+fi
+
+cd ${_DIR}
+
+######################
 clear
 echo "============================================"
-echo "WordPress Install Script"
+echo "WordPress Install Script (Japanse)"
 echo "============================================"
 echo "Database Name: "
 read -e dbname
@@ -22,9 +45,10 @@ echo "============================================"
 echo "A robot is now installing WordPress for you."
 echo "============================================"
 #download wordpress
-curl -O https://wordpress.org/latest.tar.gz
+curl -O -o ${_WP_FILE} ${_WP_DL}
 #unzip wordpress
-tar -zxvf latest.tar.gz
+tar -zxvf ${_WP_FILE}
+
 #change dir to wordpress
 cd wordpress
 #copy file to parent dir
@@ -43,9 +67,7 @@ perl -pi -e "s/password_here/$dbpass/g" wp-config.php
 mkdir wp-content/uploads
 chmod 777 wp-content/uploads
 #remove zip file
-rm latest.tar.gz
-#remove bash script
-rm wp.sh
+rm ${_WP_FILE}
 echo "========================="
 echo "Installation is complete."
 echo "========================="
