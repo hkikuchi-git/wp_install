@@ -28,7 +28,7 @@ cd ${_DIR}
 ######################
 clear
 echo "============================================"
-echo "WordPress Install Script (Japanse)"
+echo "WordPress Install Script (Japanese)"
 echo "============================================"
 echo "Database Name: "
 read -e dbname
