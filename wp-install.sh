@@ -54,11 +54,15 @@ echo "============================================"
 echo "Database Setup"
 echo "============================================"
 
-echo "CREATE DATABASE $dbname CHARACTER SET utf8;" > mysql_cmd.sql
-echo "GRANT ALL PRIVILEGES ON ${dbname}.* TO ${dbuser}@localhost IDENTIFIED BY '$dbpass';" >> mysql_cmd.sql
-echo "FLUSH PRIVILEGES;" >> mysql_cmd.sql
-echo "exit" >> mysql_cmd.sql
+# generate SQL
+cat << _EOS > mysql_cmd.sql
+CREATE DATABASE $dbname CHARACTER SET utf8;
+GRANT ALL PRIVILEGES ON ${dbname}.* TO ${dbuser}@localhost IDENTIFIED BY '$dbpass';
+FLUSH PRIVILEGES;
+exit
+_EOS
 
+# 
 mysql -u ${_MYSQL_USER} -p${_MYSQL_PW} < mysql_cmd.sql
 
 rm -f mysql_cmd.sql
