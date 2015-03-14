@@ -13,6 +13,11 @@ _WP_DL=${_WP_SITE}${_WP_FILE}
 _MYSQL_HOST="localhost"
 _MYSQL_USER="root"
 _MYSQL_PW=""
+_MYSQL_SQL=" mysql_cmd.sql"
+
+#
+#
+_APACHE_LOG="/var/log/httpd"
 
 
 #
@@ -31,6 +36,7 @@ if [ ! -d ${_DIR} ]; then
   mkdir -p ${_DIR}
 fi
 
+#move directory
 cd ${_DIR}
 
 ######################
@@ -55,7 +61,7 @@ echo "Database Setup"
 echo "============================================"
 
 # generate SQL
-cat << _EOS > mysql_cmd.sql
+cat << _EOS > ${_MYSQL_SQL}
 CREATE DATABASE $dbname CHARACTER SET utf8;
 GRANT ALL PRIVILEGES ON ${dbname}.* TO ${dbuser}@localhost IDENTIFIED BY '$dbpass';
 FLUSH PRIVILEGES;
@@ -63,16 +69,21 @@ exit
 _EOS
 
 # 
-mysql -u ${_MYSQL_USER} -p${_MYSQL_PW} < mysql_cmd.sql
+mysql -u ${_MYSQL_USER} -p${_MYSQL_PW} < ${_MYSQL_SQL}
 
-rm -f mysql_cmd.sql
+rm -f ${_MYSQL_SQL}
 
 
 echo "============================================"
 echo "A robot is now installing WordPress for you."
 echo "============================================"
+
 #download wordpress
 curl -O -o ${_WP_FILE} ${_WP_DL}
+
+# wget -q -O ${_WP_FILE} ${_WP_DL}
+# curl -s -S -O -o ${_WP_FILE} ${_WP_DL}
+
 #unzip wordpress
 tar -zxvf ${_WP_FILE}
 
@@ -98,6 +109,15 @@ cd ..
 
 #remove zip file
 rm ${_WP_FILE}
+
+
+echo "============================================"
+echo "Apache sample config"
+echo "============================================"
+
+
+
+
 
 echo "========================="
 echo "Installation is complete."
