@@ -5,6 +5,9 @@
 
 _PWD=`pwd`
 
+_NOW=`date +"%Y%m%d-%H%M"`
+_TMP_DIR="/var/tmp"
+
 #
 _WP_SITE=https://ja.wordpress.org/
 _WP_FILE=latest-ja.tar.gz
@@ -15,7 +18,7 @@ _WP_DL=${_WP_SITE}${_WP_FILE}
 _MYSQL_HOST="localhost"
 _MYSQL_USER="root"
 _MYSQL_PW=""
-_MYSQL_SQL=" mysql_cmd.sql"
+_MYSQL_SQL=${_TMP_DIR}/"mysql_cmd.sql"
 
 #
 #
@@ -77,6 +80,7 @@ CREATE DATABASE $dbname CHARACTER SET utf8;
 GRANT ALL PRIVILEGES ON ${dbname}.* TO ${dbuser}@localhost IDENTIFIED BY '$dbpass';
 FLUSH PRIVILEGES;
 exit
+
 _EOS
 
 # 
@@ -112,6 +116,18 @@ cp wp-config-sample.php wp-config.php
 perl -pi -e "s/database_name_here/$dbname/g" wp-config.php
 perl -pi -e "s/username_here/$dbuser/g" wp-config.php
 perl -pi -e "s/password_here/$dbpass/g" wp-config.php
+
+
+###
+# define('AUTH_KEY',         'put your unique phrase here');
+# define('SECURE_AUTH_KEY',  'put your unique phrase here');
+# define('LOGGED_IN_KEY',    'put your unique phrase here');
+# define('NONCE_KEY',        'put your unique phrase here');
+# define('AUTH_SALT',        'put your unique phrase here');
+# define('SECURE_AUTH_SALT', 'put your unique phrase here');
+# define('LOGGED_IN_SALT',   'put your unique phrase here');
+# define('NONCE_SALT',       'put your unique phrase here');
+
 
 #create uploads folder and set permissions
 mkdir wp-content/uploads
