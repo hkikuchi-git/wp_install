@@ -3,6 +3,8 @@
 # reference
 #  https://gist.github.com/bgallagh3r/2853221
 
+_PWD=`pwd`
+
 #
 _WP_SITE=https://ja.wordpress.org/
 _WP_FILE=latest-ja.tar.gz
@@ -36,6 +38,11 @@ if [ ! -d ${_DIR} ]; then
   mkdir -p ${_DIR}
 fi
 
+#
+_DIR_PATH=$(cd $(dirname ${_DIR}) && pwd)
+_file=$(basename ${_DIR})
+_ABSPATH=${_DIR_PATH}/${_file}
+
 #move directory
 cd ${_DIR}
 
@@ -44,6 +51,10 @@ clear
 echo "============================================"
 echo "WordPress Install Script (Japanese)"
 echo "============================================"
+
+echo "Enter your WordPress URL? [e.g. mywebsite.com]: "
+read -e wphost
+
 echo "Database Name: "
 read -e dbname
 echo "Database User: "
@@ -69,10 +80,12 @@ exit
 _EOS
 
 # 
-mysql -u ${_MYSQL_USER} -p${_MYSQL_PW} < ${_MYSQL_SQL}
+##### mysql -u ${_MYSQL_USER} -p${_MYSQL_PW} < ${_MYSQL_SQL}
 
-rm -f ${_MYSQL_SQL}
+##### rm -f ${_MYSQL_SQL}
 
+echo "Create DataBase: " $dbname
+echo ""
 
 echo "============================================"
 echo "A robot is now installing WordPress for you."
@@ -107,6 +120,11 @@ chmod 777 wp-content/uploads
 #move back to parent dir
 cd ..
 
+#
+cp -p wp/index.php .
+perl -pi -e "s|/wp-blog-header.php|/wp/wp-blog-header.php|g" index.php
+
+
 #remove zip file
 rm ${_WP_FILE}
 
@@ -115,13 +133,42 @@ echo "============================================"
 echo "Apache sample config"
 echo "============================================"
 
+cat << _EOS > ${wphost}.conf
+#
+<VirtualHost *:80>
+        ServerAdmin webmaster@example.domain
+        ServerName $wphost
 
+        DirectoryIndex index.php index.html
+
+        DocumentRoot ${_ABSPATH}
+
+        ErrorLog ${_APACHE_LOG}/error.${wphost}.log
+        CustomLog ${_APACHE_LOG}/access.${wphost}.log combined
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        <Directory "${_ABSPATH}">
+                Options FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+        </Directory>
+</VirtualHost>
+
+_EOS
+
+cat ${wphost}.conf
 
 
 
 echo "========================="
 echo "Installation is complete."
 echo "========================="
+
+cd ${_PWD}
 
 exit 1
 
