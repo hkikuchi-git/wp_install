@@ -1,13 +1,13 @@
 #
-#
 
 CC = gcc
 
 TARGET = make_string
 SRCS = make_string.c
 OBJS = make_string.o
+# DEFS = -D_USE_RANDOM -DSEED_LEN=64
 
-CFLAGS = -O2
+CFLAGS = -I. -O2 ${DEFS}
 
 all : $(TARGET)
 

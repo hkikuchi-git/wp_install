@@ -8,17 +8,18 @@
 #include "seed.h"
 
 
-int getNum(char *str)
+
+int getNum(int num)
 {
-	int n;
+	int res;
 	
 #ifdef _USE_RANDOM
-	n = random() % (strlen(str));
+	res = random() % num;
 #else
-	n = rand() % (strlen(str));
+	res = rand() % num;
 #endif
 
-	return(n);
+	return(res);
 }
 
 
@@ -33,25 +34,25 @@ int rndSeed(char *str, int len)
 
 	for (i = 0; i < len; i++)
 	{
-		r1 = rand() % 3; 
+		r1 = getNum(3);
 
 		switch (r1)
 		{
 		case 0:
-			r2 = getNum(s1);
+			r2 = getNum(strlen(s1));
 			str[i] = s1[r2];
 			break;
 		case 1:
-			r2 = getNum(s2);
+			r2 = getNum(strlen(s2));
 			str[i] = s2[r2];
 			break;
 		case 2:
-			r2 = getNum(s3);
+			r2 = getNum(strlen(s3));
 			str[i] = s3[r2];
 			break;
 /*
 		case 3:
-			r2 = rand() % (strlen(s4));
+			r2 = getNum(strlen(s4));
 			str[i] = s4[r2];
 			break;
 */
@@ -70,6 +71,14 @@ int main(int argc, char *argv[])
 	char key[SEED_LEN];
 
 	pid = getpid();
+#ifdef _USE_RANDOM
+	srandom((int)time(&t) + pid);
+#else
+	srand((int)time(&t) + pid);
+#endif
+
+	memset(key, _NULL, SEED_LEN);
+
 	if (argc < 2)
 	{
 		fprintf(stdout, "usage: %s [count]\n", argv[0]);
@@ -77,12 +86,6 @@ int main(int argc, char *argv[])
 	}
 
 	num = atoi(argv[1]);
-#ifdef _USE_RANDOM
-	srandom((int)time(&t) + pid);
-#else
-	srand((int)time(&t) + pid);
-#endif
-
 	for (i = 0; i < num; i++)
 	{
 		rndSeed(key, SEED_LEN);
