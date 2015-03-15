@@ -1,2 +1,3 @@
 bin/
-*.o
+tool/*.o
+tool/make_string
