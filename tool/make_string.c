@@ -7,6 +7,21 @@
 
 #include "seed.h"
 
+
+int getNum(char *str)
+{
+	int n;
+	
+#ifdef _USE_RANDOM
+	n = random() % (strlen(str));
+#else
+	n = rand() % (strlen(str));
+#endif
+
+	return(n);
+}
+
+
 int rndSeed(char *str, int len)
 {
 	int r1, r2;
@@ -23,15 +38,15 @@ int rndSeed(char *str, int len)
 		switch (r1)
 		{
 		case 0:
-			r2 = rand() % (strlen(s1));
+			r2 = getNum(s1);
 			str[i] = s1[r2];
 			break;
 		case 1:
-			r2 = rand() % (strlen(s2));
+			r2 = getNum(s2);
 			str[i] = s2[r2];
 			break;
 		case 2:
-			r2 = rand() % (strlen(s3));
+			r2 = getNum(s3);
 			str[i] = s3[r2];
 			break;
 /*
@@ -62,7 +77,11 @@ int main(int argc, char *argv[])
 	}
 
 	num = atoi(argv[1]);
+#ifdef _USE_RANDOM
+	srandom((int)time(&t) + pid);
+#else
 	srand((int)time(&t) + pid);
+#endif
 
 	for (i = 0; i < num; i++)
 	{
