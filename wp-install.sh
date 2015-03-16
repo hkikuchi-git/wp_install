@@ -98,7 +98,7 @@ curl -O -o ${_WP_FILE} ${_WP_DL}
 # curl -s -S -O -o ${_WP_FILE} ${_WP_DL}
 
 #unzip wordpress
-tar -zxvf ${_WP_FILE}
+tar -zxf ${_WP_FILE}
 
 #change directory-name
 mv wordpress wp
