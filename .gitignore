@@ -1,3 +1,4 @@
 bin/
 tool/*.o
 tool/make_string
+tool/make_wp-salt
