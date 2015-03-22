@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 		memset(key[i], _NULL, SEED_LEN);
 		rndSeed(key[i], SEED_LEN);
 
-		fprintf(stdout, "define(\'%s\',\t\'%s\');\n", salt_name[i], key[i]);	
+		fprintf(stdout, "define(\'%s\',\'%s\');\n", salt_name[i], key[i]);	
 	}
 
 /*
