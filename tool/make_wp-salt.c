@@ -99,15 +99,6 @@ int main(int argc, char *argv[])
 	srand((int)time(&t) + pid);
 #endif
 
-
-/*
-	if (argc < 2)
-	{
-		fprintf(stdout, "usage: %s [count]\n", argv[0]);
-		exit (-1);
-	}
-*/
-
 	ptr = &key[0][0];
 	num = SALT_NUM;
 	for (i = 0; i < num; i++)
@@ -117,11 +108,6 @@ int main(int argc, char *argv[])
 
 		fprintf(stdout, "define(\'%s\',\'%s\');\n", salt_name[i], key[i]);	
 	}
-
-/*
-define('AUTH_KEY',         'put your unique phrase here');
-
- */
 
 	return (1);
 }
