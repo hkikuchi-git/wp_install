@@ -6,23 +6,23 @@
 _PWD=`pwd`
 
 #
+_APACHE_LOG="/var/log/httpd"
+_TMP="/tmp"
+
+#
 _WP_SITE=https://ja.wordpress.org/
 _WP_FILE=latest-ja.tar.gz
 _WP_DL=${_WP_SITE}${_WP_FILE}
 
-_WPUSER="wp_user000"
-_WPPASS="WP=pass_9"
+_WPUSER="wp_user"
+_WPPASS="WPpass"
 
 #
 #
 _MYSQL_HOST="localhost"
 _MYSQL_USER="root"
 _MYSQL_PW=""
-_MYSQL_SQL=" mysql_cmd.sql"
-
-#
-#
-_APACHE_LOG="/var/log/httpd"
+_MYSQL_SQL=${_TMP}"/mysql_cmd.sql"
 
 
 #
@@ -70,8 +70,6 @@ if [ "$run" == n ] ; then
   exit 0
 fi
 
-echo ""
-
 echo "============================================"
 echo "A robot is now installing WordPress for you."
 echo "============================================"
@@ -100,6 +98,13 @@ perl -pi -e "s/database_name_here/$dbname/g" wp-config.php
 perl -pi -e "s/username_here/${_WPUSER}/g" wp-config.php
 perl -pi -e "s/password_here/${_WPPASS}/g" wp-config.php
 
+
+##
+## ** Set up secret keys
+## ** AUTH_KEY、SECURE_AUTH_KEY、LOGGED_IN_KEY,NONCE_KEY 
+## ** AUTH_SALT, SECURE_AUTH_SALT, LOGGED_IN_SALT, NONCE_SALT
+
+
 #create uploads folder and set permissions
 mkdir wp-content/uploads
 chmod 777 wp-content/uploads
@@ -113,7 +118,7 @@ perl -pi -e "s|/wp-blog-header.php|/wp/wp-blog-header.php|g" index.php
 
 
 ## 
-## ** permission (chown / chmod))
+## ** permission (chown / chmod)
 ##
 
 
@@ -175,6 +180,8 @@ cat << _EOS > ${wphost}.conf
 _EOS
 
 cat ${wphost}.conf
+echo ""
+
 
 
 
