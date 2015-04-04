@@ -10,6 +10,9 @@ _WP_SITE=https://ja.wordpress.org/
 _WP_FILE=latest-ja.tar.gz
 _WP_DL=${_WP_SITE}${_WP_FILE}
 
+_WPUSER="wp_user000"
+_WPPASS="WP=pass_9"
+
 #
 #
 _MYSQL_HOST="localhost"
@@ -57,34 +60,16 @@ read -e wphost
 
 echo "Database Name: "
 read -e dbname
-echo "Database User: "
-read -e dbuser
-echo "Database Password: "
-read -s dbpass
+# echo "Database User: "
+# read -e dbuser
+# echo "Database Password: "
+# read -s dbpass
 echo "run install? (y/n)"
 read -e run
 if [ "$run" == n ] ; then
   exit 0
 fi
 
-echo "============================================"
-echo "Database Setup"
-echo "============================================"
-
-# generate SQL
-cat << _EOS > ${_MYSQL_SQL}
-CREATE DATABASE $dbname CHARACTER SET utf8;
-GRANT ALL PRIVILEGES ON ${dbname}.* TO ${dbuser}@localhost IDENTIFIED BY '$dbpass';
-FLUSH PRIVILEGES;
-exit
-_EOS
-
-# 
-##### mysql -u ${_MYSQL_USER} -p${_MYSQL_PW} < ${_MYSQL_SQL}
-
-##### rm -f ${_MYSQL_SQL}
-
-echo "Create DataBase: " $dbname
 echo ""
 
 echo "============================================"
@@ -100,6 +85,8 @@ curl -O -o ${_WP_FILE} ${_WP_DL}
 #unzip wordpress
 tar -zxf ${_WP_FILE}
 
+#######################################################
+##
 #change directory-name
 mv wordpress wp
 #move directory
@@ -110,8 +97,8 @@ cp wp-config-sample.php wp-config.php
 
 #set database details with perl find and replace
 perl -pi -e "s/database_name_here/$dbname/g" wp-config.php
-perl -pi -e "s/username_here/$dbuser/g" wp-config.php
-perl -pi -e "s/password_here/$dbpass/g" wp-config.php
+perl -pi -e "s/username_here/${_WPUSER}/g" wp-config.php
+perl -pi -e "s/password_here/${_WPPASS}/g" wp-config.php
 
 #create uploads folder and set permissions
 mkdir wp-content/uploads
@@ -125,10 +112,37 @@ cp -p wp/index.php .
 perl -pi -e "s|/wp-blog-header.php|/wp/wp-blog-header.php|g" index.php
 
 
+## 
+## ** permission (chown / chmod))
+##
+
+
 #remove zip file
 rm ${_WP_FILE}
 
 
+#######################################################
+##
+echo "============================================"
+echo "Database Setup"
+echo "============================================"
+
+# generate SQL
+cat << _EOS > ${_MYSQL_SQL}
+CREATE DATABASE $dbname CHARACTER SET utf8;
+GRANT ALL PRIVILEGES ON ${dbname}.* TO ${_WPUSER}@localhost;
+FLUSH PRIVILEGES;
+exit
+_EOS
+
+mysql -u ${_MYSQL_USER} -p${_MYSQL_PW} -f < ${_MYSQL_SQL}
+
+rm -f ${_MYSQL_SQL}
+
+echo "Create DataBase: " $dbname
+
+#######################################################
+##
 echo "============================================"
 echo "Apache sample config"
 echo "============================================"
