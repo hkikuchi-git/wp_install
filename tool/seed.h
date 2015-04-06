@@ -8,7 +8,7 @@
 
 #define RND_SEED1	("abcdefghijklmnopqrstuvwxyz")
 #define RND_SEED2	("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-#define RND_NUM		("0123456789?._+-=#%*")
+#define RND_NUM		("0123456789?._+-=#%*<>{}[]/")
 
 #define	RND_KEY		("%#=-+?@")
 
@@ -17,6 +17,14 @@
 
 #ifndef SEED_LEN
 #define	SEED_LEN	(40)
+#endif
+
+#ifndef TRUE
+#define TRUE            (1)
+#endif
+
+#ifndef FALSE
+#define FALSE           (0)
 #endif
 
 
